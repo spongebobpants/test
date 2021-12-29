@@ -33,7 +33,7 @@ public class AuthorDao {
 			Class.forName(driver);
 
 			// 2. Connection 얻어오기
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
+			conn = DriverManager.getConnection(url, id, pw);
 
 			// 3. SQL문 준비 / 바인딩 / 실행
 
