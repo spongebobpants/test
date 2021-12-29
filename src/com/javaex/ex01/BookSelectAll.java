@@ -1,6 +1,8 @@
 package com.javaex.ex01;
 import java.sql.*;
 public class BookSelectAll {
+	
+	//private String driver 
 	public static void main(String []args) {
 		//책+작가 데이터  가져오기
 		Connection conn = null;
@@ -14,33 +16,32 @@ public class BookSelectAll {
 			conn = DriverManager.getConnection(url, "webdb", "webdb");
 			System.out.println("접속성공");
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query ="";
-			query += " select book_id, ";
-			query += "        title, ";
-			query += "        pubs, ";
-			query += "        pub_date, ";
-            query += "        author_id ";
-            query += " from book ";
-			System.out.println(query);
+			String query = "";
+			query += " select  author.author_id id, ";
+			query += "			author_name, ";
+			query += "			author_desc, ";
+			query += "			book_id, ";
+			query += "			title, ";
+			query += "			pubs, ";
+			query += "			pub_date ";
+			query += " from author, book ";
+			query += " where book.author_id = author.author_id ";
+			//System.out.println(query);
+            
 			//binding 문자열만들기
 			pstmt=conn.prepareStatement(query);
-			
-			//binding
-			pstmt.setString(1,"순정만화");
-			pstmt.setString(2, "재미주의");
-			pstmt.setString(3, "18/08/24");
-			pstmt.setInt(4,6);
-
 			//play
-			rs = pstmt.executeQuery();
+			rs=pstmt.executeQuery();
 			
 			while(rs.next()) {
-				int bookId=rs.getInt(1);
-				String title=rs.getString(2);
-				String pubs=rs.getString(3);
-				String pub_date=rs.getString(4);
-				int authorId=rs.getInt(5);
-				System.out.println(bookId +","+title+","+pubs+","+pub_date+","+authorId);
+				int author_id=rs.getInt("author_id");
+				String author_name=rs.getString("author_name");
+				String author_desc=rs.getString("author_desc");
+				int book_id=rs.getInt("book_id");
+				String title=rs.getString("title");
+				String pubs=rs.getString("pubs");
+				String pub_date=rs.getString("pub_date");
+				System.out.println(author_id+","+ author_name+","+author_desc+", "+book_id+", "+title+", "+pubs+", "+pub_date);
 			}
 		} catch (ClassNotFoundException e) {
 		    System.out.println("error: 드라이버 로딩 실패 - " + e);
