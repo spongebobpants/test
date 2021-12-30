@@ -7,6 +7,9 @@ import java.util.List;
 public class AuthorDao {
 
 	// 필드
+	private Connection conn = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
 	private String driver = "oracle.jdbc.driver.OracleDriver";
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String id = "webdb";
@@ -19,22 +22,43 @@ public class AuthorDao {
 	// 메소드 gs
 
 	// 메소드 일반
-
+	public void getConnection() {
+		
+		try {
+		//1. JDBC  loading
+		Class.forName(driver);
+		
+		// 2. Connection 얻어오기
+		conn=DriverManager.getConnection(url, id, pw);
+		
+		}catch (ClassNotFoundException e){
+			System.out.println("error : 드라이버 로딩 실패 " + e);
+			e.printStackTrace();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public void close() {
+		try {
+			if(rs  !=null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}catch (SQLException e) {
+				System.out.println("error: "+e);
+			}
+		}
+		
 	// 작가 추가
 	public void authorInsert(AuthorVo authorVo) {
 
-		// 0. import java.sql.*;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		// ResultSet rs = null;
+		this.getConnection();
 
 		try {
-			// 1. JDBC 드라이버 (Oracle) 로딩
-			Class.forName(driver);
-
-			// 2. Connection 얻어오기
-			conn = DriverManager.getConnection(url, id, pw);
-
 			// 3. SQL문 준비 / 바인딩 / 실행
 
 			// 문자열 만들기
@@ -55,31 +79,27 @@ public class AuthorDao {
 
 			// 4.결과처리
 			System.out.println(count + " 건이 저장되었습니다.(작가)");
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("error: 드라이버 로딩 실패 - " + e);
-		} catch (SQLException e) {
+		}catch (SQLException e) {
 			System.out.println("error:" + e);
-		} finally {
-
-			// 5. 자원정리
-			try {
+		}finally {
+			
+		}
+			//.자원정리
 				/*
-				 * if (rs != null) { rs.close(); }
-				 */
+				if(rs  !=null) {
+					rs.close();
+				}
 				if (pstmt != null) {
 					pstmt.close();
 				}
 				if (conn != null) {
 					conn.close();
 				}
-			} catch (SQLException e) {
-				System.out.println("error:" + e);
-			}
-
-		}
-
+			}*/
 	}
+	
+			// 5. 자원정리
+
 
 	// 작가 삭제
 	public void authorDelete(int index) {
@@ -94,7 +114,7 @@ public class AuthorDao {
 			Class.forName(driver);
 
 			// 2. Connection 얻어오기
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
+			conn = DriverManager.getConnection(url, id, pw);
 
 			// 3. SQL문 준비 / 바인딩 / 실행
 			// 문자열 만들기
@@ -123,9 +143,6 @@ public class AuthorDao {
 
 			// 5. 자원정리
 			try {
-				/*
-				 * if (rs != null) { rs.close(); }
-				 */
 				if (pstmt != null) {
 					pstmt.close();
 				}
@@ -153,7 +170,7 @@ public class AuthorDao {
 			Class.forName(driver);
 
 			// 2. Connection 얻어오기
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
+			conn = DriverManager.getConnection(url, id, pw);
 
 			// 3. SQL문 준비 / 바인딩 / 실행
 			// 문자열 만들기
