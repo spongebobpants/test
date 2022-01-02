@@ -35,7 +35,7 @@ public class AuthorDao {
 			System.out.println("error : 드라이버 로딩 실패 " + e);
 			e.printStackTrace();
 		}catch(SQLException e) {
-			e.printStackTrace();
+			System.out.println("error:" + e);
 		}
 	}
 	public void close() {
@@ -48,7 +48,9 @@ public class AuthorDao {
 			}
 			if (conn != null) {
 				conn.close();
-			}catch (SQLException e) {
+			} 
+		}
+		catch (SQLException e) {
 				System.out.println("error: "+e);
 			}
 		}
@@ -81,43 +83,16 @@ public class AuthorDao {
 			System.out.println(count + " 건이 저장되었습니다.(작가)");
 		}catch (SQLException e) {
 			System.out.println("error:" + e);
-		}finally {
-			
+		}//자원닫기
+		close();
 		}
-			//.자원정리
-				/*
-				if(rs  !=null) {
-					rs.close();
-				}
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			}*/
-	}
-	
-			// 5. 자원정리
-
-
+			
 	// 작가 삭제
 	public void authorDelete(int index) {
-
-		// 0. import java.sql.*;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		// ResultSet rs = null;
+		//로딩, connection 얻어오기
+		getConnection();
 
 		try {
-			// 1. JDBC 드라이버 (Oracle) 로딩
-			Class.forName(driver);
-
-			// 2. Connection 얻어오기
-			conn = DriverManager.getConnection(url, id, pw);
-
-			// 3. SQL문 준비 / 바인딩 / 실행
-			// 문자열 만들기
 			String query = "";
 			query += " delete from author ";
 			query += " where author_id = ? ";
@@ -135,43 +110,17 @@ public class AuthorDao {
 			// 4.결과처리
 			System.out.println(count + " 건이 삭제되었습니다.(작가)");
 
-		} catch (ClassNotFoundException e) {
-			System.out.println("error: 드라이버 로딩 실패 - " + e);
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-		} finally {
-
-			// 5. 자원정리
-			try {
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				System.out.println("error:" + e);
-			}
-
-		}
-
+			}close();
 	}
 
 	// 작가 수정
 	public void authorUpdate(AuthorVo authorVo) {
 
-		// 0. import java.sql.*;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		// ResultSet rs = null;
+		getConnection();
 
 		try {
-			// 1. JDBC 드라이버 (Oracle) 로딩
-			Class.forName(driver);
-
-			// 2. Connection 얻어오기
-			conn = DriverManager.getConnection(url, id, pw);
-
 			// 3. SQL문 준비 / 바인딩 / 실행
 			// 문자열 만들기
 			String query = "";
@@ -194,29 +143,10 @@ public class AuthorDao {
 
 			// 4.결과처리
 			System.out.println(count + " 건이 수정되었습니다.(작가)");
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("error: 드라이버 로딩 실패 - " + e);
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-		} finally {
-
-			// 5. 자원정리
-			try {
-				/*
-				 * if (rs != null) { rs.close(); }
-				 */
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				System.out.println("error:" + e);
-			}
-
-		}
+		} 
+		close();
 
 	}
 
@@ -224,18 +154,9 @@ public class AuthorDao {
 	public List<AuthorVo> authorSelect() {
 		List<AuthorVo> authorList = new ArrayList<AuthorVo>();
 		
-		// 0. import java.sql.*;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		getConnection();
 
 		try {
-			// 1. JDBC 드라이버 (Oracle) 로딩
-			Class.forName(driver);
-			
-			// 2. Connection 얻어오기
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-			
 			// 3. SQL문 준비 / 바인딩 / 실행
 			  //문자열 만들기
 			String query ="";
@@ -262,32 +183,9 @@ public class AuthorDao {
 				AuthorVo vo= new AuthorVo(authorId, authorName, authorDesc);
 				authorList.add(vo);
 			}
-			
-			
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("error: 드라이버 로딩 실패 - " + e);
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-		} finally {
-
-			// 5. 자원정리
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				System.out.println("error:" + e);
-			}
-
-		}
-
+		} close();
 		return authorList;
 	}
 
